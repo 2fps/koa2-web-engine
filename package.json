@@ -1,0 +1,37 @@
+{
+  "name": "koa2-web-engine",
+  "version": "1.0.0",
+  "description": "koa2的web引擎demo",
+  "main": "app.ts",
+  "scripts": {
+    "watch"      : "ts-node ./app.ts",
+    "start"      : "nodemon --watch ./app.js",
+    "build"      : "tsc",
+    "debugger"   : "nodemon  --watch ./src -e  ts,tsx  --exec node --inspect -r ts-node/register  ./app.ts",
+    "watch-serve": "nodemon  --watch './src/**/*' -e  ts,tsx  --exec ts-node  ./app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2fps/koa2-web-engine.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2fps/koa2-web-engine/issues"
+  },
+  "homepage": "https://github.com/2fps/koa2-web-engine#readme",
+  "devDependencies": {
+    "@types/koa": "^2.0.48",
+    "@types/koa-router": "^7.0.40",
+    "@types/node": "^11.11.4",
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.4000"
+  },
+  "dependencies": {
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0"
+  }
+}
