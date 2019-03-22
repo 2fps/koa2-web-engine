@@ -1,37 +1,35 @@
 {
   "name": "koa2-web-engine",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "koa2的web引擎demo",
-  "main": "app.ts",
   "scripts": {
-    "watch"      : "ts-node ./app.ts",
-    "start"      : "nodemon --watch ./app.js",
-    "build"      : "tsc",
-    "debugger"   : "nodemon  --watch ./src -e  ts,tsx  --exec node --inspect -r ts-node/register  ./app.ts",
-    "watch-serve": "nodemon  --watch './src/**/*' -e  ts,tsx  --exec ts-node  ./app.ts"
+    "watch": "ts-node bin/www",
+    "start": "nodemon --watch bin/www",
+    "build": "tsc",
+    "prd": "pm2 start bin/www",
+    "debugger": "nodemon  --watch ./src -e  ts,tsx  --exec node --inspect -r ts-node/register  bin/www",
+    "watch-serve": "nodemon  --watch './src/**/*' -e  ts,tsx  --exec ts-node  bin/www"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/2fps/koa2-web-engine.git"
+  "dependencies": {
+    "debug": "^2.6.3",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^3.2.0",
+    "koa-convert": "^1.2.0",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^2.0.1",
+    "koa-onerror": "^1.2.1",
+    "koa-router": "^7.1.1",
+    "koa-static": "^3.0.0",
+    "koa-views": "^5.2.1",
+    "pug": "^2.0.0-rc.1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/2fps/koa2-web-engine/issues"
-  },
-  "homepage": "https://github.com/2fps/koa2-web-engine#readme",
   "devDependencies": {
+    "nodemon": "^1.8.1",
     "@types/koa": "^2.0.48",
     "@types/koa-router": "^7.0.40",
     "@types/node": "^11.11.4",
-    "nodemon": "^1.18.10",
     "ts-node": "^8.0.3",
     "tslint": "^5.14.0",
     "typescript": "^3.3.4000"
-  },
-  "dependencies": {
-    "koa": "^2.7.0",
-    "koa-router": "^7.4.0"
   }
 }
