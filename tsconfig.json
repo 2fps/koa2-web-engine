@@ -60,9 +60,10 @@
     "include": [
       "./bin/www",
       "app.ts",
-      "./src/**/*"
+      "./src/**/*",
+      "./routes/**/*"
     ],
     "exclude": [
-        "node_modules"
+      "node_modules"
     ]
 }

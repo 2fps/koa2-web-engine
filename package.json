@@ -8,7 +8,7 @@
     "build": "tsc",
     "prd": "pm2 start bin/www",
     "debugger": "nodemon  --watch ./src -e  ts,tsx  --exec node --inspect -r ts-node/register  bin/www",
-    "watch-serve": "nodemon  --watch './src/**/*' -e  ts,tsx  --exec ts-node  bin/www"
+    "watch-server": "nodemon  --watch './src/**/*' -e  ts,tsx  --exec ts-node  bin/www"
   },
   "dependencies": {
     "debug": "^2.6.3",
