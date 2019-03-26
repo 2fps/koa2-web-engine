@@ -5,8 +5,7 @@ const json = require('koa-json')
 const onError = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-
-const index = require('./routes/index')
+const registerRouter = require('./routes');
 
 // error handler
 onError(app);
@@ -24,19 +23,18 @@ app.use(views(__dirname + '/views', {
 }))
 
 // logger
-app.use(async (ctx: any, next: any) => {
-    const start: any = new Date()
+app.use(async (ctx, next) => {
+    const start = new Date()
     await next()
-    const stop: any = new Date();
-    const ms: any = stop - start;
+    const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 })
 
 // routes
-app.use(index.routes(), index.allowedMethods())
+app.use(registerRouter());
 
 // error-handling
-app.on('error', (err: any, ctx: any) => {
+app.on('error', (err, ctx) => {
     console.error('server error', err, ctx)
 });
 
