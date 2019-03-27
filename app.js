@@ -7,7 +7,7 @@ const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const registerRouter = require('./routes');
 const koa2Xss = require('koa2-xss');
-// const middleware = require('./utils/middleware.js');
+const webSocket = require('./utils/webSocket');
 
 // error handler
 onError(app);
@@ -24,9 +24,6 @@ app.use(views(__dirname + '/views', {
     extension: 'pug'
 }))
 
-app.use(koa2Xss());
-// middleware.use(app);
-
 // logger
 app.use(async (ctx, next) => {
     const start = new Date()
@@ -34,6 +31,9 @@ app.use(async (ctx, next) => {
     const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 })
+
+app.use(koa2Xss());
+// middleware.use(app);
 
 // routes
 app.use(registerRouter());
