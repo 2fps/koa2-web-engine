@@ -6,6 +6,8 @@ const onError = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const registerRouter = require('./routes');
+const koa2Xss = require('koa2-xss');
+// const middleware = require('./utils/middleware.js');
 
 // error handler
 onError(app);
@@ -21,6 +23,9 @@ app.use(require('koa-static')(__dirname + '/public'))
 app.use(views(__dirname + '/views', {
     extension: 'pug'
 }))
+
+app.use(koa2Xss());
+// middleware.use(app);
 
 // logger
 app.use(async (ctx, next) => {

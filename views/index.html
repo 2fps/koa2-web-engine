@@ -28,7 +28,7 @@
     </div>
     <h3>log</h3>
     <div>
-
+        <button type="button" id="log">点此按钮，将记录日志</button>
     </div>
 </body>
 <script type="text/javascript" src="javascripts/jsencrypt.js"></script>
@@ -45,9 +45,27 @@ document.getElementById('login').addEventListener('click', function() {
     });
 });
 document.getElementById('joi_btn').addEventListener('click', function() {
-    getKey().then(function(secret) {
-        login(secret)
+    var val = parseInt(document.getElementById('joi').value);
+
+    if (isNaN(val)) {
+        // 输入了以字母开头的字符串
+        val = document.getElementById('joi').value;
+    }
+
+    fetch('/api/joi', {
+        method: 'post',
+        body: JSON.stringify({
+            must: val
+        })
+    }).then(function(data) {
+        return data.json();
+    }).then(function(data) {
+        debugger;
     });
+});
+
+document.getElementById('log').addEventListener('click', function() {
+    fetch('/api/log4js');
 });
 
 function login(publicKey) {
