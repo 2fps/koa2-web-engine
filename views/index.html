@@ -7,36 +7,40 @@
     <title>Document</title>
 </head>
 <body>
-    <h3></h3>
+    <h3>验证码</h3>
+    <p>点击图片，重新加载新的图片</p>
     <div id="verCode">
         <img src="" alt="">
     </div>
-    <h3></h3>
+    <h3>加密登录</h3>
+    <p>随便输入，只加密密码字段</p>
     <div>
-        <input type="text" id="username" />
-        <input type="text" id="password" />
-        <button type="button" id="login">login</button>
+        <input type="text" id="username" placeholder="用户名" />
+        <input type="text" id="password" placeholder="密码" />
+        <button type="button" id="login">登录</button>
     </div>
-    <h3>joi</h3>
+    <h3>参数类型检测</h3>
     <div>
+        <p>请输入字母带头的字符串</p>
         <input type="text" id="joi" />
-        <button type="button" id="joi_btn">send</button>
+        <button type="button" id="joi_btn">发送</button>
     </div>
-    <h3>xss</h3>
+    <h3>防xss</h3>
     <div>
-        <textarea name="" id="originCon" cols="30" rows="10"></textarea>
-        <textarea name="" id="afterCon" cols="30" rows="10"></textarea>
-        <button type="button" id="xss_send">send</button>
+        <textarea name="" id="originCon" cols="30" rows="10" placeholder="原始数据"></textarea>
+        <button type="button" id="xss_send">转化</button>
+        <textarea name="" id="afterCon" cols="30" rows="10" placeholder="转换后的数据"></textarea>
     </div>
-    <h3>log</h3>
+    <h3>日志记录</h3>
     <div>
         <button type="button" id="log">点此按钮，将记录日志</button>
     </div>
-    <h3>node-schedule</h3>
+    <h3>定时任务</h3>
     <div>
+        <p>定时当秒钟为0时，在后端运行控制台上打印</p>
         <button type="button" id="schedule">开启</button>
     </div>
-    <h3>12</h3>
+    <h3>websocket</h3>
     <div>
         <textarea id="socCon"></textarea>
         <button type="button" id="startSoc">开启</button>
@@ -46,108 +50,144 @@
 </body>
 <script type="text/javascript" src="javascripts/jsencrypt.js"></script>
 <script>
-
-getCode();
-document.getElementById('verCode').addEventListener('click', function() {
+/**
+ * 处理验证码，svg-captcha
+ */ 
+(function() {
     getCode();
-});
-
-document.getElementById('login').addEventListener('click', function() {
-    getKey().then(function(secret) {
-        login(secret)
+    document.getElementById('verCode').addEventListener('click', function() {
+        getCode();
     });
-});
-document.getElementById('joi_btn').addEventListener('click', function() {
-    var val = parseInt(document.getElementById('joi').value);
-
-    if (isNaN(val)) {
-        // 输入了以字母开头的字符串
-        val = document.getElementById('joi').value;
+    
+    // 获取验证码的svg格式数据
+    function getCode() {
+        fetch('/api/verificationCode').then(function(data) {
+            // 转json
+            return data.json();
+        }).then(function(data) {
+            document.getElementById('verCode').innerHTML = data.data + '<span>' + data.text + '</span>';
+        });
     }
+})();
 
-    fetch('/api/joi', {
-        method: 'post',
-        body: JSON.stringify({
-            must: val
-        })
-    }).then(function(data) {
-        return data.json();
-    }).then(function(data) {
-        debugger;
+/**
+ * 处理密码加密的登录模块 node-rsa
+ */
+(function() {
+    document.getElementById('login').addEventListener('click', function() {
+        getKey().then(function(secret) {
+            login(secret)
+        });
     });
-});
 
-document.getElementById('log').addEventListener('click', function() {
-    fetch('/api/log4js');
-});
+    // 实现登录功能
+    function login(publicKey) {
+        var encrypt = new JSEncrypt(),
+            username = document.getElementById('username').value,
+            password = document.getElementById('password').value;
 
-document.getElementById('xss_send').addEventListener('click', function() {
-    fetch('/api/xss', {
-        method: 'post',
-        body: JSON.stringify({
-            content: document.getElementById('originCon').value
-        }),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    }).then(function(data) {
-        return data.json();
-    }).then(function(data) {
-        document.getElementById('afterCon').value = data.data.content;
-    });
-});
+        encrypt.setPublicKey(publicKey);
+        // 加密密码
+        password = encrypt.encrypt(password);
 
-document.getElementById('schedule').addEventListener('click', function() {
-    fetch('/api/schedule');
-});
+        return fetch('/api/login', {
+            method: 'POST',
+            body: JSON.stringify({
+                username,
+                password
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }).then(function(data) {
+            // 转json
+            return data.json();
+        }).then(function(data) {
+            if (data.result) {
+                alert('登录成功');
+            }
+        });
+    }
+    // 获取公钥
+    function getKey() {
+        return fetch('/api/publicKey').then(function(data) {
+            // 转json
+            return data.json();
+        }).then(function(data) {
+            return data.secret;
+        });
+    }
+})();
 
-function login(publicKey) {
-    var encrypt = new JSEncrypt(),
-        username = document.getElementById('username').value,
-        password = document.getElementById('password').value;
-
-    encrypt.setPublicKey(publicKey);
-    // 加密密码
-    password = encrypt.encrypt(password);
-
-    return fetch('/api/login', {
-        method: 'POST',
-        body: JSON.stringify({
-            username,
-            password
-        }),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-    }).then(function(data) {
-        // 转json
-        return data.json();
-    }).then(function(data) {
-        if (data.result) {
-            alert('登录成功');
+/**
+ * 参数格式验证 joi
+ */
+(function() {
+    document.getElementById('joi_btn').addEventListener('click', function() {
+        var val = parseInt(document.getElementById('joi').value);
+    
+        if (isNaN(val)) {
+            // 输入了以字母开头的字符串
+            val = document.getElementById('joi').value;
         }
+    
+        fetch('/api/joi', {
+            method: 'post',
+            body: JSON.stringify({
+                must: val
+            })
+        }).then(function(data) {
+            return data.json();
+        }).then(function(data) {
+            data.result ? alert('输入正确') : alert('输入错误');
+        });
     });
-}
+})();
 
-function getKey() {
-    return fetch('/api/publicKey').then(function(data) {
-        // 转json
-        return data.json();
-    }).then(function(data) {
-        return data.secret;
+/**
+ * 日志模块 log4js
+ */
+(function() {
+    document.getElementById('log').addEventListener('click', function() {
+        fetch('/api/log4js');
     });
-}
+})();
 
-function getCode() {
-    fetch('/api/verificationCode').then(function(data) {
-        // 转json
-        return data.json();
-    }).then(function(data) {
-        document.getElementById('verCode').innerHTML = data.data + '<span>' + data.text + '</span>';
+/**
+ * 防止xss攻击
+ */
+(function() {
+    document.getElementById('xss_send').addEventListener('click', function() {
+        fetch('/api/xss', {
+            method: 'post',
+            body: JSON.stringify({
+                content: document.getElementById('originCon').value
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        }).then(function(data) {
+            return data.json();
+        }).then(function(data) {
+            document.getElementById('afterCon').value = data.data.content;
+        });
     });
-}
+})();
+
+/**
+ * 定时器
+ */
+(function() {
+    document.getElementById('schedule').addEventListener('click', function() {
+        fetch('/api/schedule');
+    });
+})();
+
+/**
+ * websocket
+ */
 (function() {
     var oStartSoc = document.getElementById('startSoc'),
         oSendSoc = document.getElementById('sendSoc'),
