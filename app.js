@@ -8,6 +8,7 @@ const logger = require('koa-logger')
 const registerRouter = require('./routes');
 const koa2Xss = require('koa2-xss');
 const webSocket = require('./utils/webSocket');
+// const middleware = require('./utils/middleware');
 
 // error handler
 onError(app);

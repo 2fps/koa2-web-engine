@@ -5,6 +5,7 @@
 
 const Joi = require('joi');
 
+// 校验的格式
 let paramsFormat = {
     post: {
         joi: {                      // url末尾是joi

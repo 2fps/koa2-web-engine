@@ -1,9 +1,10 @@
-const compose = require('koa-compose');
 const glob = require('glob');
+const compose = require('koa-compose');
 const { resolve } = require('path');
 
 registerRouter = () => {
     let routers = [];
+
     glob.sync(resolve(__dirname, './', '**/*.js'))
         .filter(value => (value.indexOf('index.js') === -1))
         .map(router => {

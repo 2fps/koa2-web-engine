@@ -3,12 +3,8 @@
   "version": "0.1.0",
   "description": "koa2的web引擎demo",
   "scripts": {
-    "watch": "ts-node bin/www",
-    "start": "nodemon --watch bin/www",
-    "build": "tsc",
-    "prd": "pm2 start built/bin/www",
-    "debugger": "nodemon  --watch ./src -e  ts,tsx  --exec node --inspect -r ts-node/register  bin/www",
-    "watch-server": "nodemon  --watch './src/**/*' -e  ts,tsx  --exec ts-node  bin/www"
+    "start": "node bin/www",
+    "prd": "pm2 start built/bin/www"
   },
   "dependencies": {
     "debug": "^2.6.3",
@@ -32,13 +28,5 @@
     "ws": "^6.2.0",
     "xss": "^1.0.6"
   },
-  "devDependencies": {
-    "nodemon": "^1.8.1",
-    "@types/koa": "^2.0.48",
-    "@types/koa-router": "^7.0.40",
-    "@types/node": "^11.11.4",
-    "ts-node": "^8.0.3",
-    "tslint": "^5.14.0",
-    "typescript": "^3.3.4000"
-  }
+  "devDependencies": {}
 }
